@@ -7,10 +7,15 @@ class UsersController < ApplicationController
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
       render json: { token: token, exp: time.strftime("%m-%d-%Y %H:%M"),
-                     username: @user.email }, status: :ok
+                     username: @user.name, id: @user.id }, status: :ok
     else
       render json: { errors: { 'email or password' => ['is invalid'] } }, status: :unprocessable_entity
     end
+  end
+
+  def index
+    @users = User.all
+    render json: @users, methods: [:image_url]
   end
 
   def create
@@ -18,12 +23,32 @@ class UsersController < ApplicationController
     if @user.save
       render json: @user, methods: [:image_url]
     else
-      render json: @user.errors, status: 422
+      render json: @user.errors, status: unprocessable_entity
     end 
+  end
+
+  def show
+    @user = User.find(params[:id])
+    render json: @user, methods: [:image_url]
+  end
+
+  def update
+    @user = User.find(params[:id])
+    if @user.update(user_params)
+      render json: @user, methods: [:image_url]
+    else
+      render json: @user.errors, status: unprocessable_entity
+    end 
+  end
+
+  def destroy 
+    @user = User.find(params[:id])
+    @user = @user.destroy
+    render json: @user, status: :ok
   end
 
   private
     def user_params
-      params.permit(:name, :email, :password, :profile, :user_type, :phone, :address, :dob)
+      params.permit(:name, :email, :password, :profile, :user_type, :phone, :address, :dob, :created_user_id)
     end
 end

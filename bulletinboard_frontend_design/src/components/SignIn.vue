@@ -7,27 +7,22 @@
             alt="Sample image">
         </div>
         <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-          <form>
+          <form v-on:submit.prevent="signIn">
             <div class="text-center">
-              <p class="lead fw-bold mb-0 me-3">Sign in to your account</p>
+              <p class="lead fw-bold sign-in mb-0 me-3">Sign in to your account</p>
             </div>
 
             <div class="divider d-flex align-items-center my-4"></div>
 
-            <!-- Email input -->
             <div class="form-outline mb-4">
-              <input type="email" id="form3Example3" class="form-control form-control-lg"
-                placeholder="Email address" />
+              <input type="email" id="form3Example3" class="form-control form-control-lg" v-model="user.email" placeholder="Email address" />
             </div>
 
-            <!-- Password input -->
             <div class="form-outline mb-3">
-              <input type="password" id="form3Example4" class="form-control form-control-lg"
-                placeholder="Enter password" />
+              <input type="password" id="form3Example4" class="form-control form-control-lg" v-model="user.password" placeholder="Enter password" />
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
-              <!-- Checkbox -->
               <div class="form-check mb-0">
                 <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
                 <label class="form-check-label" for="form2Example3">
@@ -38,9 +33,8 @@
             </div>
 
             <div class="text-center text-lg-start mt-4 pt-2">
-              <button type="button" class="btn btn-primary btn-lg"
-                style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-              <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <router-link :to='{name: "BootstrapRegister"}' class="link-danger">Register</router-link></p>
+              <input type="submit" class="btn btn-primary btn-lg"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;" value="Login" />
             </div>
 
           </form>
@@ -53,7 +47,26 @@
 
 <script>
 export default {
-  
+  Components: {
+    name: 'SignIn'
+  },
+  data() {
+    return {
+      user: {}
+    }
+  },
+  methods: {
+    signIn () {
+      let uri = 'http://localhost:3000/login';
+      this.axios.post(uri, this.user).then((response) => {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("username", response.data.username);
+        localStorage.setItem("id", response.data.id);
+        console.log(localStorage.getItem("id"));
+        this.$router.push({name: 'UserListsAdmin'});
+      });
+    }
+  }
 }
 </script>
 
@@ -68,6 +81,14 @@ export default {
 
   .h-custom {
     height: calc(100% - 73px);
+  }
+
+  .sign-in {
+    font-size: 22px;
+  }
+
+  a {
+    text-decoration: none;
   }
 
   @media (max-width: 450px) {
