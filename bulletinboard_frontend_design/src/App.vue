@@ -41,7 +41,7 @@
     </nav>
     
     <transition name="fade">
-      <div>
+      <div class="pb-40">
         <router-view></router-view>        
       </div>
     </transition>
@@ -81,6 +81,9 @@ export default {
   }
   .fade-enter, .fade-leave-active {
     opacity: 0
+  }
+  .pb-40 {
+    padding-bottom: 40px;
   }
   .p-20 {
     padding: 8px 20px;

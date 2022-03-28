@@ -11,6 +11,9 @@ import SignIn from './components/SignIn.vue';
 import UserListsAdmin from './components/UserListsAdmin.vue';
 import UserProfile from './components/UserProfile.vue';
 import CreateUser from './components/CreateUser.vue';
+import UserUpdate from './components/UserUpdate.vue';
+import ConfirmUser from './components/ConfirmUser.vue';
+import ChangePassword from './components/ChangePassword.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
@@ -40,6 +43,21 @@ const routes = [
     name: 'CreateUser',
     path: '/create_user',
     component: CreateUser
+  },
+  {
+    name: 'UserUpdate',
+    path: '/update_user',
+    component: UserUpdate
+  },
+  {
+    name: 'ConfirmUser',
+    path: '/confirm_user',
+    component: ConfirmUser
+  },
+  {
+    name: 'ChangePassword',
+    path: '/change_password',
+    component: ChangePassword
   }
 ];
 

@@ -19,8 +19,8 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
-    if @user.save
+    @user = User.create(user_params)
+    if @user
       render json: @user, methods: [:image_url]
     else
       render json: @user.errors, status: unprocessable_entity
@@ -45,6 +45,16 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user = @user.destroy
     render json: @user, status: :ok
+  end
+
+  def change_password
+    @user = User.find(params[:id])
+    if @user.authenticate(params[:current_password])
+      @is_update_password = @user.update_attribute(:password, new_password)
+      render json: {message: "Change password successfully"}
+    else
+      render json: {errors: "Somethings went wrong"}, status: unprocessable_entity
+    end
   end
 
   private

@@ -5,9 +5,9 @@
         <div class="col-12 col-lg-9 col-xl-7">
           <div class="shadow p-3 mb-5 bg-white rounded card-registration">
             <div class="card-body p-4 p-md-2">
-              <h3 class="text-center pb-md-0 mb-md-4">Create New User</h3>
+              <h3 class="text-center pb-md-0 mb-md-4">Update Profile</h3>
               <hr class="mb-md-4">
-              <form v-on:submit.prevent="confirmUser">
+              <form enctype="multipart/form-data" v-on:submit.prevent="updateUser">
 
                 <div class="row">
                   <div class="col-md-6 mb-4">
@@ -27,33 +27,10 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-md-6 mb-4">
-
-                    <div class="form-outline">
-                      <input type="password" id="password" class="form-control form-control-lg" placeholder="Enter Password" v-model="user.password" />
-                    </div>
-
-                  </div>
-                  <div class="col-md-6 mb-4">
-
-                    <div class="form-outline">
-                      <input type="password" id="confirm_password" class="form-control form-control-lg" placeholder="Re-enter Passwrod" v-model="user.confirm_password" />
-                    </div>
-
-                  </div>
-                </div>
-
-                <div class="row">
                   <div class="col-md-6 mb-4 d-flex align-items-center">
 
                     <div class="form-outline datepicker w-100">
-                      <input
-                        type="date"
-                        class="form-control form-control-lg"
-                        id="birthdayDate"
-                        placeholder="Birthday"
-                        v-model="user.dob"
-                      />
+                      <input type="text" placeholder="Enter Birthday" onfocus="(this.type='date')" class="form-control form-control-lg" v-model="user.dob" />
                     </div>
 
                   </div>
@@ -68,7 +45,6 @@
                         name="inlineRadioOptions"
                         id="user"
                         value="1"
-                        checked
                         v-model="user.user_type"
                       />
                       <label class="form-check-label" for="user">User</label>
@@ -115,7 +91,7 @@
 
                 <div class="mt-4 pt-2 d-flex justify-content-around align-items-center">
                   <input class="btn btn-outline-primary btn-lg" type="submit" value="Submit" />
-                  <input class="btn btn-outline-warning btn-lg" type="reset" />
+                  <router-link :to="{ name: 'UserProfile', query: { id: user.id }}" class="btn btn-outline-primary" >Cancel</router-link>
                 </div>
 
               </form>
@@ -124,100 +100,60 @@
         </div>
       </div>
     </div>
-
-    <!-- <div v-else>
-      <div class="container py-3">
-        <div class="row text-center">
-            <div class="col-lg-8 mx-auto">
-                <h1 class="text-uppercase">Confirm User</h1>
-            </div>
-        </div>
-      </div>
-
-      <div class="container mw-600 text-center mb-5">
-        <div class="shadow-lg p-3 mb-5 bg-body rounded">
-          <img v-bind:src="user.image_url" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
-          <h5 class="mb-0 text-uppercase">{{ user.name }}</h5>
-          <span class="small text-muted">{{ user.email }}</span>
-          <div class="row">
-            <ul class="col-sm mb-3 mt-3 list-unstyled text-right">
-              <li>Role : </li>
-              <li>Created by : </li>
-              <li>Phone No. : </li>
-              <li>Date of Birth : </li>
-              <li>Address : </li>
-            </ul>
-            <ul class="social mb-3 mt-3 col-sm list-unstyled text-left">
-              <li>{{ (user.user_type == 0) ? "Admin" : "User" }}</li>
-              <li>{{ user.created_user_id }}</li>
-              <li>{{ user.phone }}</li>
-              <li>{{ date_format(user.dob) }}</li>
-              <li>{{ user.address }}</li>
-            </ul>
-          </div>
-          <div class="d-flex justify-content-between">
-            <button @click="addUser" class="btn btn-outline-success">Create</button>
-            <button @click="cancel" class="btn btn-outline-warning">Cancel</button>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-    <ConfirmUser/>
   </section>
 </template>
 
 <script>
-  import ConfirmUser from './ConfirmUser.vue'
-
-  export default {
-    name: 'CreateUser',
-    components: {
-      ConfirmUser
+export default {
+  data() {
+    return {
+      user: {},
+      api_header : {headers: {
+        'Authorization': localStorage.getItem('token')
+      }}
+    }
+  },
+  created: function() {
+    this.getUser();
+  },
+  methods: {
+    setImage(e) {
+      e.preventDefault();
+      this.user.profile = e.target.files[0];
+      console.log("e photo is --",e, "this user --",this.user.profile);
     },
-    data() {
-      return {
-        // isConfirm: false,
-        user: {},
-        api_header : {headers: {
-          'Authorization': localStorage.getItem('token')
-        }}
-      }
+    getUser()
+    {
+      let uri = 'http://localhost:3000/users/'+ this.$route.query.id;
+      this.axios.get(uri, this.api_header).then((response) => {
+        this.user = response.data;
+        this.user.dob = this.date_format(this.user.dob);
+        console.log(response);
+        return response
+      });
     },
-    methods: {
-      setImage(e) {
-        e.preventDefault();
-        this.user.profile = e.target.files[0];
-      },
-      confirmUser(){
-        // this.isConfirm = true;
-        this.user.image_url = URL.createObjectURL(this.user.profile);
-        this.user.created_user_id = localStorage.getItem("id");
-      },
-      // cancel(){
-      //   this.isConfirm = false;
-      // },
-    
-      // addUser() {  
-      //   let uri = 'http://localhost:3000/users';
 
-      //   let formData = new FormData();
-      //   formData.append("name", this.user.name);
-      //   formData.append("email", this.user.email);
-      //   formData.append("password", this.user.password);
-      //   formData.append("dob", this.user.dob);
-      //   formData.append("user_type", this.user.user_type);
-      //   formData.append("address", this.user.address);
-      //   formData.append("phone", this.user.phone);
-      //   formData.append("created_user_id", this.user.created_user_id);
-      //   formData.append("profile", this.user.profile);
-      //   this.axios.post(uri, formData, this.api_header).then((response) => {
-      //     this.$router.push({name: 'UserListsAdmin'});
-      //     console.log(response.data)
-      //   });
-      // }
+    updateUser()
+    {
+      let uri = 'http://localhost:3000/users/' + this.$route.query.id;
+
+      let formData = new FormData();
+      formData.append("name", this.user.name);
+      formData.append("email", this.user.email);
+      formData.append("dob", this.user.dob);
+      formData.append("user_type", this.user.user_type);
+      formData.append("address", this.user.address);
+      formData.append("phone", this.user.phone);
+      formData.append("profile", this.user.profile);
+      formData.append("updated_user_id", localStorage.getItem("id"));
+
+      this.axios.put(uri, formData, this.api_header).then((response) => {
+        this.$router.push({name: 'UserProfile', query: { id: this.user.id }});
+        return response
+      });
     }
   }
+}
 </script>
 
 <style>
