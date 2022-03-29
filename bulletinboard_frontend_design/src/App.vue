@@ -24,11 +24,11 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {{ this.username }}
+                {{ username }}
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <li>
-                  <a class="dropdown-item" href="#">Profile</a>
+                  <router-link :to="{ name: 'UserProfile', query: {id: id} }"><span class="dropdown-item">Profile</span></router-link>
                 </li>
                 <li>
                   <router-link :to="{ name: 'SignIn' }"><span class="dropdown-item" @click="logout">Log Out</span></router-link>
@@ -47,12 +47,10 @@
     </transition>
 
     <footer v-if="!$route.meta.hideNavbar" class="p-15" style="background-color: #0a4275;">
-      <!-- Copyright -->
       <div class="d-flex justify-content-between" >
         <a class="text-white text-decoration-none txt" href="#">Seattle Consulting Myanmar Co., Ltd</a>
         <span class="text-white txt">© Copyright</span>
       </div>
-      <!-- Copyright -->
     </footer>
 
   </div>
@@ -61,15 +59,26 @@
 <script>
 
 export default {
+  mounted() {
+    window.addEventListener('localstorage-changed', () => {
+      this.username = localStorage.getItem("username"),
+      this.id = localStorage.getItem("id")
+    });
+  },
   data() {
     return {
-      username: localStorage.getItem("username")
+      username: localStorage.getItem("username"),
+      id: localStorage.getItem("id")
     }
   },
   methods: {
     logout (){
       localStorage.removeItem("token");
       localStorage.removeItem("username");
+      localStorage.removeItem("id");
+      localStorage.removeItem("user_type");
+      console.log("user name is ", this.username," id is ",this.id);
+      console.log("local user name is ", localStorage.getItem("username"));
     }
   }
 }

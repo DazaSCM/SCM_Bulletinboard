@@ -3,12 +3,12 @@
     <div class="container py-3">
       <div class="row text-center">
           <div class="col-lg-8 mx-auto">
-              <h1 class="text-uppercase">Confirm User</h1>
+              <h1 class="text-uppercase">Confirm User {{user.name}}</h1>
           </div>
       </div>
     </div>
 
-    <!-- <div class="container mw-600 text-center mb-5">
+    <div class="container mw-600 text-center mb-5">
       <div class="shadow-lg p-3 mb-5 bg-body rounded">
         <img v-bind:src="user.image_url" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
         <h5 class="mb-0 text-uppercase">{{ user.name }}</h5>
@@ -30,17 +30,23 @@
           </ul>
         </div>
         <div class="d-flex justify-content-between">
-          <button @click="addUser" class="btn btn-outline-success">Create</button>
-          <button @click="cancel" class="btn btn-outline-warning">Cancel</button>
+          <button @click="$emit('submitUser')" class="btn btn-outline-success">Submit</button>
+          <button @click="$emit('cancelConfirm')" class="btn btn-outline-warning">Cancel</button>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script>
   export default {
-    name: "ConfirmUser"
+    name: "ConfirmUser",
+    props: {
+      user: {
+        type: Object,
+        required: true
+      }
+    }
   }
 </script>
 

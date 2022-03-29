@@ -46,28 +46,31 @@
 </template>
 
 <script>
-export default {
-  Components: {
-    name: 'SignIn'
-  },
-  data() {
-    return {
-      user: {}
-    }
-  },
-  methods: {
-    signIn () {
-      let uri = 'http://localhost:3000/login';
-      this.axios.post(uri, this.user).then((response) => {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("username", response.data.username);
-        localStorage.setItem("id", response.data.id);
-        console.log(localStorage.getItem("id"));
-        this.$router.push({name: 'UserListsAdmin'});
-      });
+  export default {
+    Components: {
+      name: 'SignIn'
+    },
+    
+    data() {
+      return {
+        user: {}
+      }
+    },
+    methods: {
+      signIn () {
+        let uri = 'http://localhost:3000/login';
+        this.axios.post(uri, this.user).then((response) => {
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("username", response.data.username);
+          localStorage.setItem("id", response.data.id);
+          localStorage.setItem("user_type", response.data.user_type);
+          console.log("user type is ", localStorage.getItem("user_type")," id is ", localStorage.getItem("id"));
+          this.$router.push({name: 'UserListsAdmin'});
+          window.dispatchEvent(new CustomEvent('localstorage-changed'));
+        });
+      }
     }
   }
-}
 </script>
 
 <style>

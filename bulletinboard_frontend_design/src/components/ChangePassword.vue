@@ -2,19 +2,22 @@
   <div class="container w-400 m-auto">
     <h2 class="text-center m-50">Change Password</h2>
     <div class="m-auto">
-      <form id="contact-form" class="form">
+      <form v-on:submit.prevent="change" class="form">
         <div class="form-group mb-4">
-            <input type="password" class="form-control" id="name" name="password" placeholder="Current Password" tabindex="1" required>
+            <input type="password" class="form-control" id="current_pass" v-model="user.current_password" placeholder="Current Password" tabindex="1" required>
+            <p id="current"></p>
         </div>                            
         <div class="form-group mb-4">
-            <input type="password" class="form-control" id="email" name="new-pass" placeholder="New Password" tabindex="2" required>
+            <input type="password" class="form-control" id="new_pass" v-model="user.new_password" placeholder="New Password" tabindex="2" required>
+            <p id="new"></p>
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" id="email" name="confirm-pass" placeholder="Confirm Password" tabindex="2" required>
+            <input type="password" class="form-control" id="confirm_pass" name="confirm_password" placeholder="Confirm Password" tabindex="2" required>
+            <p id="confirm"></p>
         </div>
         <div class="d-flex justify-content-around">
           <button type="submit" class="btn btn-start-order">Change</button>
-          <button type="submit" class="btn btn-end-order">Cancel</button>
+          <router-link :to="{ name: 'UserProfile', query: { id: user_id }}" class="btn btn-end-order" >Cancel</router-link>
         </div>                              
       </form>
     </div>
@@ -23,7 +26,30 @@
 
 <script>
 export default {
-  
+  data(){
+    return{
+      user: {},
+      user_id: this.$route.query.id,
+      api_header : {headers: {
+        'Authorization': localStorage.getItem('token')
+      }}
+    }
+  },
+
+  methods: {
+    change()
+    {
+      console.log("id is",this.user_id);
+      // let current = document.getElementById("current_pass").value;
+      // let new_one = document.getElementById("new_pass").value;
+      // let confirm = document.getElementById("confirm_pass").value;
+
+      let uri = 'http://localhost:3000/change_password/'+this.user_id;
+      this.axios.post(uri, this.user, this.api_header).then(() => {
+        this.$router.push({name: 'UserProfile', query: {id: this.user_id}});
+      });
+    }
+  }
 }
 </script>
 

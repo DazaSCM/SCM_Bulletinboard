@@ -34,7 +34,7 @@
         </div>
         <div class="d-flex justify-content-between">
           <router-link :to="{ name: 'UserUpdate', query: { id: user.id }}" >Update profile?</router-link>
-          <a href="#">Change Password?</a>
+          <router-link :to="{ name: 'ChangePassword', query: { id: user.id }}" >Change Password?</router-link>
         </div>
       </div>
     </div>

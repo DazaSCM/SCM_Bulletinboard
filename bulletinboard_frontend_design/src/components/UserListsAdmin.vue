@@ -1,20 +1,27 @@
 <template>
   <div class="container">
-    <div class="input-group rounded search">
-      <input type="search" class="form-control rounded" placeholder="Search by Title" aria-label="Search" aria-describedby="search-addon" />
-      <span class="input-group-text border-0 rounded" id="search-addon">
-        <i class="fas fa-search"></i>
-      </span>
-      <span><router-link :to="{ name: 'CreateUser' }" class="btn btn-outline-success" >Add User</router-link></span>
-    </div>
-    <table class="table align-middle mt-5 mb-5 shadow-lg p-3 mb-5 bg-body rounded">
+    <form v-on:submit.prevent="search" class="search">
+      <div class="form-group-stylish row">
+        <div class="col-sm-5">
+          <input type="text" class="form-control" placeholder="Search by Name" @keyup="isClear" v-model="name">
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary" type="submit" style="max-width: 120px;">Search</button>
+        </div>
+        <div v-if="type == 0" class="col-sm-2">
+          <router-link :to="{ name: 'CreateUser' }" class="btn btn-success" >Add New</router-link>
+        </div>
+      </div>
+    </form>
+
+    <table class="table align-middle mt-3 mb-5 shadow-lg p-3 mb-5 bg-body rounded">
       <thead class="bg-light">
         <tr>
           <th>Name</th>
           <th>Email</th>
           <th>Created By</th>
           <th>Created Date</th>
-          <th colspan="2">Actions</th>
+          <th v-if="type == 0" colspan="2">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -41,10 +48,10 @@
           <td>
             <p class="fw-normal mb-1">{{ date_format(user.created_at) }}</p>
           </td>
-          <td>
+          <td v-if="type == 0">
             <router-link :to="{ name: 'UserProfile', query: { id: user.id }}" class="btn btn-outline-info" >Details</router-link>
           </td>
-          <td>
+          <td v-if="type == 0">
             <button type="button" class="btn btn-outline-danger" @click="deleteUser(user.id)">Delete</button>
           </td>
         </tr>
@@ -59,6 +66,8 @@ export default {
   data(){
     return{
       users: [],
+      name: "",
+      type: localStorage.getItem("user_type"),
       api_header : {headers: {
         'Authorization': localStorage.getItem('token')
       }}
@@ -78,6 +87,19 @@ export default {
         this.users = response.data;
       });
     },
+    search()
+    {
+      console.log(this.name);
+      let uri = 'http://localhost:3000/search?name='+this.name;
+      this.axios.get(uri, this.api_header).then((response) => {
+        this.users = response.data;
+      });
+    },
+    isClear(){
+      if(!this.name){
+        this.fetchUsers();
+      }
+    },
     deleteUser(id)
     {
       let uri = 'http://localhost:3000/users/'+id;
@@ -90,11 +112,7 @@ export default {
 </script>
 
 <style>
-  span {
-    margin-right: 20px;
-  }
   .search {
-    max-width: 400px;
-    margin-top: 30px;
+    margin: 30px auto;
   }
 </style>

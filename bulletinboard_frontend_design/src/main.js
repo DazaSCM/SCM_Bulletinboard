@@ -64,12 +64,32 @@ const routes = [
 Vue.mixin({
   methods: {
     date_format (value) {
-      return moment(value).format('MM/DD/YYYY')
+      return moment(new Date(value)).format('MM/DD/YYYY')
     }
   },
 });
 
 const router = new VueRouter({ mode: 'history', routes: routes });
+
+router.beforeEach((to, from, next) => {
+  console.log("to - ", to.name, "from - ", from.name);
+  if (!localStorage.getItem('token')) {
+    if (to.name == 'SignIn') {
+      next()
+    }
+    else {
+      next({ name: 'SignIn'})
+    }
+  }
+  else {
+    if (to.name == 'SignIn') {
+      next ({name: 'UserListsAdmin'})
+    }
+    else {
+      next()
+    }
+  }
+});
 
 new Vue({
   router,

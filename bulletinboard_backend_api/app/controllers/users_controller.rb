@@ -7,7 +7,7 @@ class UsersController < ApplicationController
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
       render json: { token: token, exp: time.strftime("%m-%d-%Y %H:%M"),
-                     username: @user.name, id: @user.id }, status: :ok
+                     username: @user.name, id: @user.id, user_type: @user.user_type }, status: :ok
     else
       render json: { errors: { 'email or password' => ['is invalid'] } }, status: :unprocessable_entity
     end
@@ -16,6 +16,15 @@ class UsersController < ApplicationController
   def index
     @users = User.all
     render json: @users, methods: [:image_url]
+  end
+
+  def search
+    @users = User.where(name: params[:name])
+    if @users
+      render json: @users, methods: [:image_url]
+    else
+      render json: {error: "User Not Found"}
+    end
   end
 
   def create
@@ -50,10 +59,10 @@ class UsersController < ApplicationController
   def change_password
     @user = User.find(params[:id])
     if @user.authenticate(params[:current_password])
-      @is_update_password = @user.update_attribute(:password, new_password)
+      @is_update_password = @user.update_attribute(:password, params[:new_password ])
       render json: {message: "Change password successfully"}
     else
-      render json: {errors: "Somethings went wrong"}, status: unprocessable_entity
+      render json: {errors: "Invalid Current Password"}, status: unprocessable_entity
     end
   end
 

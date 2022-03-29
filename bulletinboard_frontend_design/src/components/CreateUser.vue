@@ -1,6 +1,6 @@
 <template>
   <section class="vh-100">
-    <div class="container py-5 h-100">
+    <div v-if="isCreate" class="container py-5 h-100">
       <div class="row justify-content-center align-items-center h-100">
         <div class="col-12 col-lg-9 col-xl-7">
           <div class="shadow p-3 mb-5 bg-white rounded card-registration">
@@ -14,6 +14,7 @@
 
                     <div class="form-outline">
                       <input type="text" id="name" class="form-control form-control-lg" placeholder="Enter Name" v-model="user.name" />
+                      <span class="err_msg">{{ errors.name }}</span>
                     </div>
 
                   </div>
@@ -21,6 +22,7 @@
 
                     <div class="form-outline">
                       <input type="text" id="email" class="form-control form-control-lg" placeholder="Enter Email" v-model="user.email" />
+                      <span class="err_msg">{{ errors.email }}</span>
                     </div>
 
                   </div>
@@ -31,6 +33,7 @@
 
                     <div class="form-outline">
                       <input type="password" id="password" class="form-control form-control-lg" placeholder="Enter Password" v-model="user.password" />
+                      <span class="err_msg">{{ errors.password }}</span>
                     </div>
 
                   </div>
@@ -38,6 +41,7 @@
 
                     <div class="form-outline">
                       <input type="password" id="confirm_password" class="form-control form-control-lg" placeholder="Re-enter Passwrod" v-model="user.confirm_password" />
+                      <span class="err_msg">{{ errors.confirm_password }}</span>
                     </div>
 
                   </div>
@@ -47,13 +51,8 @@
                   <div class="col-md-6 mb-4 d-flex align-items-center">
 
                     <div class="form-outline datepicker w-100">
-                      <input
-                        type="date"
-                        class="form-control form-control-lg"
-                        id="birthdayDate"
-                        placeholder="Birthday"
-                        v-model="user.dob"
-                      />
+                      <input type="text" placeholder="Enter Birthday" onfocus="(this.type='date')" class="form-control form-control-lg" v-model="user.dob" />
+                      <span class="err_msg">{{ errors.dob }}</span>
                     </div>
 
                   </div>
@@ -84,8 +83,8 @@
                         v-model="user.user_type"
                       />
                       <label class="form-check-label" for="admin">Admin</label>
-                    </div>
-
+                    </div><br>
+                    <span class="err_msg">{{ errors.user_type }}</span>
                   </div>
                 </div>
 
@@ -94,6 +93,7 @@
 
                     <div class="form-outline">
                       <input type="text" id="address" class="form-control form-control-lg" placeholder="Enter Address" v-model="user.address" />
+                      <span class="err_msg">{{ errors.address }}</span>
                     </div>
 
                   </div>
@@ -101,6 +101,7 @@
 
                     <div class="form-outline">
                       <input type="tel" id="phoneNumber" class="form-control form-control-lg" placeholder="Enter Phone Number" v-model="user.phone" />
+                      <span class="err_msg">{{ errors.phone }}</span>
                     </div>
 
                   </div>
@@ -124,46 +125,7 @@
         </div>
       </div>
     </div>
-
-    <!-- <div v-else>
-      <div class="container py-3">
-        <div class="row text-center">
-            <div class="col-lg-8 mx-auto">
-                <h1 class="text-uppercase">Confirm User</h1>
-            </div>
-        </div>
-      </div>
-
-      <div class="container mw-600 text-center mb-5">
-        <div class="shadow-lg p-3 mb-5 bg-body rounded">
-          <img v-bind:src="user.image_url" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
-          <h5 class="mb-0 text-uppercase">{{ user.name }}</h5>
-          <span class="small text-muted">{{ user.email }}</span>
-          <div class="row">
-            <ul class="col-sm mb-3 mt-3 list-unstyled text-right">
-              <li>Role : </li>
-              <li>Created by : </li>
-              <li>Phone No. : </li>
-              <li>Date of Birth : </li>
-              <li>Address : </li>
-            </ul>
-            <ul class="social mb-3 mt-3 col-sm list-unstyled text-left">
-              <li>{{ (user.user_type == 0) ? "Admin" : "User" }}</li>
-              <li>{{ user.created_user_id }}</li>
-              <li>{{ user.phone }}</li>
-              <li>{{ date_format(user.dob) }}</li>
-              <li>{{ user.address }}</li>
-            </ul>
-          </div>
-          <div class="d-flex justify-content-between">
-            <button @click="addUser" class="btn btn-outline-success">Create</button>
-            <button @click="cancel" class="btn btn-outline-warning">Cancel</button>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-    <ConfirmUser/>
+    <ConfirmUser v-else :user="user" @cancelConfirm="cancel" @submitUser="addUser"/>
   </section>
 </template>
 
@@ -177,8 +139,9 @@
     },
     data() {
       return {
-        // isConfirm: false,
+        isCreate: true,
         user: {},
+        errors: {},
         api_header : {headers: {
           'Authorization': localStorage.getItem('token')
         }}
@@ -189,33 +152,78 @@
         e.preventDefault();
         this.user.profile = e.target.files[0];
       },
-      confirmUser(){
-        // this.isConfirm = true;
-        this.user.image_url = URL.createObjectURL(this.user.profile);
-        this.user.created_user_id = localStorage.getItem("id");
+      isValidate(){
+        this.errors = {};
+        var isChecked = true;
+        if (!this.user.name) {
+          this.errors.name = 'Name is required!';
+          isChecked = false;
+        }
+        if (!this.user.email) {
+          this.errors.email = 'Email is required!';
+          isChecked = false;
+        }
+        if (!this.user.password){
+          this.errors.password = 'Password is required!';
+          isChecked = false;
+        }
+        if (!this.user.confirm_password){
+          this.errors.confirm_password = 'Confirm password is required';
+          isChecked = false;
+        }
+        if (this.user.password != this.user.confirm_password){
+          this.errors.confirm_password = 'Password and Confirm Password must be the same!';
+          isChecked = false;
+        }
+        if (!this.user.dob){
+          this.errors.dob ='Date of Birth is required!';
+          isChecked = false;
+        }
+        if (!this.user.user_type){
+          this.errors.user_type = 'User type is required!';
+          isChecked = false;
+        }
+        if (!this.user.address){
+          this.errors.address = 'Address is required!';
+          isChecked = false;
+        }
+        if (!this.user.phone){
+          this.errors.phone = 'Phone Number is required!';
+          isChecked = false;
+        }
+        console.log("user data are ", this.user.name);
+        console.log(this.errors);
+        return isChecked
       },
-      // cancel(){
-      //   this.isConfirm = false;
-      // },
-    
-      // addUser() {  
-      //   let uri = 'http://localhost:3000/users';
+      confirmUser(){
+        this.isValidate();
+        if (this.isValidate() == true) {
+          this.isCreate = false;
+          this.user.image_url = URL.createObjectURL(this.user.profile);
+          this.user.created_user_id = localStorage.getItem("id");
+        }
+      },
+      cancel(){
+        this.isCreate = true;
+      },
+      addUser() {  
+        let uri = 'http://localhost:3000/users';
 
-      //   let formData = new FormData();
-      //   formData.append("name", this.user.name);
-      //   formData.append("email", this.user.email);
-      //   formData.append("password", this.user.password);
-      //   formData.append("dob", this.user.dob);
-      //   formData.append("user_type", this.user.user_type);
-      //   formData.append("address", this.user.address);
-      //   formData.append("phone", this.user.phone);
-      //   formData.append("created_user_id", this.user.created_user_id);
-      //   formData.append("profile", this.user.profile);
-      //   this.axios.post(uri, formData, this.api_header).then((response) => {
-      //     this.$router.push({name: 'UserListsAdmin'});
-      //     console.log(response.data)
-      //   });
-      // }
+        let formData = new FormData();
+        formData.append("name", this.user.name);
+        formData.append("email", this.user.email);
+        formData.append("password", this.user.password);
+        formData.append("dob", this.user.dob);
+        formData.append("user_type", this.user.user_type);
+        formData.append("address", this.user.address);
+        formData.append("phone", this.user.phone);
+        formData.append("created_user_id", this.user.created_user_id);
+        formData.append("profile", this.user.profile);
+        this.axios.post(uri, formData, this.api_header).then((response) => {
+          this.$router.push({name: 'UserListsAdmin'});
+           console.log(response.data)
+        });
+      }
     }
   }
 </script>
@@ -243,5 +251,8 @@
   input{
     font-family: 'Times New Roman', Times, serif;
     font-size: 17px !important;
+  }
+  .err_msg {
+    color: red;
   }
 </style>
