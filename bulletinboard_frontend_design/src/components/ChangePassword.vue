@@ -4,16 +4,16 @@
     <div class="m-auto">
       <form v-on:submit.prevent="change" class="form">
         <div class="form-group mb-4">
-            <input type="password" class="form-control" id="current_pass" v-model="user.current_password" placeholder="Current Password" tabindex="1" required>
-            <p id="current"></p>
+            <input type="password" class="form-control" id="current_pass" v-model="user.current_password" placeholder="Current Password" tabindex="1">
+            <span class="err_msg">{{ this.errors.current_password }}</span>
         </div>                            
         <div class="form-group mb-4">
-            <input type="password" class="form-control" id="new_pass" v-model="user.new_password" placeholder="New Password" tabindex="2" required>
-            <p id="new"></p>
+            <input type="password" class="form-control" id="new_pass" v-model="user.new_password" placeholder="New Password" tabindex="2">
+            <span class="err_msg">{{ this.errors.new_password }}</span>
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" id="confirm_pass" name="confirm_password" placeholder="Confirm Password" tabindex="2" required>
-            <p id="confirm"></p>
+            <input type="password" class="form-control" id="confirm_pass" v-model="user.confirm_password" name="confirm_password" placeholder="Confirm Password" tabindex="2">
+            <span class="err_msg">{{ this.errors.confirm_password }}</span>
         </div>
         <div class="d-flex justify-content-around">
           <button type="submit" class="btn btn-start-order">Change</button>
@@ -29,6 +29,7 @@ export default {
   data(){
     return{
       user: {},
+      errors: {},
       user_id: this.$route.query.id,
       api_header : {headers: {
         'Authorization': localStorage.getItem('token')
@@ -37,17 +38,44 @@ export default {
   },
 
   methods: {
+    isValidate(){
+      this.errors = {};
+      var isChecked = true;
+      if(this.user.current_password == null) {
+        this.errors.current_password = "Current password must not be blank!";
+        isChecked = false;
+      }
+      if(this.user.new_password == null) {
+        this.errors.new_password = "New password must not be blank!";
+        isChecked = false;
+      }
+      if(this.user.confirm_password == null) {
+        this.errors.confirm_password = "Confirm password must not be blank!";
+        isChecked = false;
+      }
+      if(this.user.new_password != this.user.confirm_password) {
+        this.errors.confirm_password = "New password and Confirm password must be the same!";
+        isChecked = false;
+      }
+      return isChecked
+    },
     change()
     {
-      console.log("id is",this.user_id);
-      // let current = document.getElementById("current_pass").value;
-      // let new_one = document.getElementById("new_pass").value;
-      // let confirm = document.getElementById("confirm_pass").value;
-
-      let uri = 'http://localhost:3000/change_password/'+this.user_id;
-      this.axios.post(uri, this.user, this.api_header).then(() => {
-        this.$router.push({name: 'UserProfile', query: {id: this.user_id}});
-      });
+      this.isValidate();
+      console.log(this.isValidate())
+      if(this.isValidate() == true) {
+        let uri = 'http://localhost:3000/change_password/'+this.user_id;
+        this.axios.post(uri, this.user, this.api_header).then(() => {
+          this.$router.push({name: 'UserProfile', query: {id: this.user_id}});
+        }).catch(error => {
+          console.log(error.response.data.errors);
+          if(error){
+            this.isValidate();
+            this.errors.current_password = "Invalid Current Password!"
+            console.log(this.errors.current_password);
+          }
+        });
+      }
     }
   }
 }

@@ -6,11 +6,11 @@
           <input type="text" class="form-control" placeholder="Search by Title" @keyup="isClear" v-model="title">
         </div>
         <div class="col-sm-1">
-          <button class="btn btn-primary" type="submit" style="max-width: 120px;">Search</button>
+          <button class="btn btn-info" type="submit" style="max-width: 120px;">Search</button>
         </div>
-        <!-- <div v-if="type == 0" class="col-sm-2">
-          <router-link :to="{ name: 'CreateUser' }" class="btn btn-success" >Add New</router-link>
-        </div> -->
+        <div class="col-sm-2">
+          <router-link :to="{ name: 'CreatePost' }" class="btn btn-primary" >Add New</router-link>
+        </div>
       </div>
     </form>
 

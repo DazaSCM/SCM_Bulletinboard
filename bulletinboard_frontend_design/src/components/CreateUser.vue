@@ -191,8 +191,6 @@
           this.errors.phone = 'Phone Number is required!';
           isChecked = false;
         }
-        console.log("user data are ", this.user.name);
-        console.log(this.errors);
         return isChecked
       },
       confirmUser(){

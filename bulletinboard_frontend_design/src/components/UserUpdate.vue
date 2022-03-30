@@ -48,7 +48,6 @@
                         name="inlineRadioOptions"
                         id="user"
                         value="1"
-                        checked
                         v-model="user.user_type"
                       />
                       <label class="form-check-label" for="user">User</label>

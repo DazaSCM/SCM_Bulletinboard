@@ -47,6 +47,12 @@ class PostsController < ApplicationController
     render json: @post, status: :ok
   end
 
+  def admin_update
+    @post = Post.find(params[:id])
+    @post = @post.update(title: params[:title], description: params[:description], status: params[:status], updated_user_id: params[:user_id])
+    render json: @post, status: :ok
+  end
+
   def destroy
     @user = User.find(params[:user_id])
     @post = @user.posts.find(params[:id])

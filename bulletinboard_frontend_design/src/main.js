@@ -16,6 +16,8 @@ import ConfirmUser from './components/ConfirmUser.vue';
 import ChangePassword from './components/ChangePassword.vue';
 import PostLists from './components/PostLists.vue';
 import PostDetails from './components/PostDetails.vue';
+import CreatePost from './components/CreatePost.vue';
+import UpdatePost from './components/UpdatePost.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
@@ -70,6 +72,16 @@ const routes = [
     name: 'PostDetails',
     path: '/post_details',
     component: PostDetails
+  },
+  {
+    name: 'CreatePost',
+    path: '/create_post',
+    component: CreatePost
+  },
+  {
+    name: 'UpdatePost',
+    path: '/update_post',
+    component: UpdatePost
   }
 ];
 

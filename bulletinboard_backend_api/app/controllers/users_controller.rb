@@ -62,7 +62,7 @@ class UsersController < ApplicationController
       @is_update_password = @user.update_attribute(:password, params[:new_password ])
       render json: {message: "Change password successfully"}
     else
-      render json: {errors: "Invalid Current Password"}, status: unprocessable_entity
+      render json: {errors: "Invalid Current Password"}, status: :unprocessable_entity
     end
   end
 
