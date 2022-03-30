@@ -96,8 +96,8 @@
                 </div>
 
                 <div class="mt-4 pt-2 d-flex justify-content-around align-items-center">
-                  <input class="btn btn-outline-primary btn-lg" type="submit" value="Submit" />
-                  <input class="btn btn-outline-warning btn-lg" type="reset" />
+                  <input class="btn btn-outline-primary" type="submit" value="Submit" />
+                  <router-link :to="{ name: 'UserProfile', query: { id: user.id }}" class="btn btn-outline-info" >Cancel</router-link>
                 </div>
 
               </form>

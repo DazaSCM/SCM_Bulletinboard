@@ -10,7 +10,7 @@
               <router-link :to="{ name: 'UserListsAdmin' }" class="nav-link">Users</router-link>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Posts</a>
+              <router-link :to="{ name: 'PostLists' }" class="nav-link">Posts</router-link>
             </li>
           </ul>
 
@@ -77,8 +77,6 @@ export default {
       localStorage.removeItem("username");
       localStorage.removeItem("id");
       localStorage.removeItem("user_type");
-      console.log("user name is ", this.username," id is ",this.id);
-      console.log("local user name is ", localStorage.getItem("username"));
     }
   }
 }

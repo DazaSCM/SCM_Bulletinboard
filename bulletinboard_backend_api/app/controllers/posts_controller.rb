@@ -10,10 +10,24 @@ class PostsController < ApplicationController
     render json: @posts, status: :ok
   end
 
+  def post_search
+    @posts = Post.where(title: params[:title])
+    if @posts 
+      render json: @posts, status: :ok
+    else
+      render json: {errors: "No posts found"}
+    end
+  end
+
   def show
     @user = User.find(params[:user_id])
     @post = @user.posts.find(params[:id])
     render json: @post, status: :ok
+  end
+
+  def admin_show
+    @post = Post.find(params[:id])
+    render json: @post, status: :ok 
   end
 
   def create
