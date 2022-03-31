@@ -9,5 +9,6 @@ Rails.application.routes.draw do
   get 'all_posts', to: 'posts#all_posts'
   get 'admin_show/:id', to: 'posts#admin_show'
   put 'admin_update/:id', to: 'posts#admin_update'
+  post 'csv_create', to: 'posts#csv_create'
   post 'change_password/:id', to: 'users#change_password'
 end

@@ -40,6 +40,19 @@ class PostsController < ApplicationController
     end
   end
 
+  def csv_create
+    @user = User.find(params[:user_id])
+    file = params[:csv_file]
+    @rowarraydisp = CSV.read(file.path).drop(1)
+    
+    @rowarraydisp.each do |article|
+      temp_params = {"title"=>article[0], "description"=>article[1], "status"=>article[2]}
+      @posts = @user.posts.create(temp_params)
+    end
+    render json: @posts, status: :ok
+
+  end
+
   def update
     @user = User.find(params[:user_id])
     @post = @user.posts.find(params[:id])

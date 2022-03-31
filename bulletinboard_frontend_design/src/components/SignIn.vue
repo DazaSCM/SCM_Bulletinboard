@@ -14,12 +14,16 @@
 
             <div class="divider d-flex align-items-center my-4"></div>
 
+            <p class="err text-center">{{ errors.invalid_err }}</p>
+
             <div class="form-outline mb-4">
               <input type="email" id="form3Example3" class="form-control form-control-lg" v-model="user.email" placeholder="Email address" />
+              <span class="err">{{ errors.email }}</span>
             </div>
 
             <div class="form-outline mb-3">
               <input type="password" id="form3Example4" class="form-control form-control-lg" v-model="user.password" placeholder="Enter password" />
+              <span class="err">{{ errors.password }}</span>
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
@@ -53,12 +57,28 @@
     
     data() {
       return {
-        user: {}
+        user: {},
+        errors: {}
       }
     },
     methods: {
+      isValidate() {
+        this.errors = {};
+        var isChecked = true;
+        if(this.user.email == null) {
+          this.errors.email = 'Email is required!';
+          isChecked = false;
+        }
+        if(this.user.password == null) {
+          this.errors.password = 'Password is required!'
+          isChecked = false;
+        }
+        return isChecked
+      },
       signIn () {
+        this.isValidate();
         let uri = 'http://localhost:3000/login';
+        if(this.isValidate() == true)
         this.axios.post(uri, this.user).then((response) => {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("username", response.data.username);
@@ -66,6 +86,10 @@
           localStorage.setItem("user_type", response.data.user_type);
           this.$router.push({name: 'UserListsAdmin'});
           window.dispatchEvent(new CustomEvent('localstorage-changed'));
+        }).catch(e => {
+          console.log(e);
+          this.isValidate();
+          this.errors.invalid_err = "Incorrect email or password!"
         });
       }
     }
@@ -91,6 +115,11 @@
 
   a {
     text-decoration: none;
+  }
+
+  .err {
+    color: red;
+    margin-bottom: 10px;
   }
 
   @media (max-width: 450px) {

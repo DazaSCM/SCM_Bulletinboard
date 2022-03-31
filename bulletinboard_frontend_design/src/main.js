@@ -18,10 +18,14 @@ import PostLists from './components/PostLists.vue';
 import PostDetails from './components/PostDetails.vue';
 import CreatePost from './components/CreatePost.vue';
 import UpdatePost from './components/UpdatePost.vue';
+import CSVupload from './components/CSVupload.vue';
+
+import VueBlobJsonCsv from 'vue-blob-json-csv';
+
+Vue.use(VueBlobJsonCsv)
 
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
-
 Vue.config.productionTip = false
 
 const routes = [
@@ -82,6 +86,11 @@ const routes = [
     name: 'UpdatePost',
     path: '/update_post',
     component: UpdatePost
+  },
+  {
+    name: 'CSVupload',
+    path: '/csv_upload',
+    component: CSVupload
   }
 ];
 

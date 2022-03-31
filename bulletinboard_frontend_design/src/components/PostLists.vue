@@ -8,12 +8,24 @@
         <div class="col-sm-1">
           <button class="btn btn-info" type="submit" style="max-width: 120px;">Search</button>
         </div>
-        <div class="col-sm-2">
-          <router-link :to="{ name: 'CreatePost' }" class="btn btn-primary" >Add New</router-link>
+        <div class="col-sm-1">
+          <router-link :to="{ name: 'CreatePost' }" class="btn btn-primary w-80" >Add</router-link>
+        </div>
+        <div class="col-sm-1">
+          <vue-blob-json-csv
+            file-type="csv"
+            class="btn btn-primary w-80"
+            file-name="todos"
+            :data="post_lists"
+          >
+            Download
+          </vue-blob-json-csv>
+        </div>
+        <div class="col-sm-1">
+          <router-link :to="{ name: 'CSVupload' }" class="btn btn-primary w-80" >Upload</router-link>
         </div>
       </div>
     </form>
-
     <table class="table align-middle mt-3 mb-5 shadow-lg p-3 mb-5 bg-body rounded">
       <thead class="bg-light">
         <tr>
@@ -52,10 +64,12 @@
 </template>
 
 <script>
+
   export default {
     data(){
       return{
         posts: {},
+        post_lists: [],
         title: '',
         api_header : {headers: {
           'Authorization': localStorage.getItem('token')
@@ -80,8 +94,10 @@
         }
         this.axios.get(uri, this.api_header).then((response) => {
           this.posts = response.data;
+          this.post_lists = response.data;
         });
       },
+      
       search()
       {
         let uri = 'http://localhost:3000/post_search?title='+this.title;
@@ -108,5 +124,11 @@
 <style>
   .search {
     margin: 30px auto;
+  }
+  .col-sm-1 {
+    width: unset;
+  }
+  .w-80 {
+    width: 100px;
   }
 </style>
