@@ -7,6 +7,7 @@
             alt="Sample image">
         </div>
         <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+          <p v-if="message" class="text-center text-success">{{ message }}</p>
           <form v-on:submit.prevent="signIn">
             <div class="text-center">
               <p class="lead fw-bold sign-in mb-0 me-3">Sign in to your account</p>
@@ -33,7 +34,7 @@
                   Remember me
                 </label>
               </div>
-              <a href="#!" class="text-body">Forgot password?</a>
+              <router-link :to="{ name: 'ResetPassword'}" >Forgot Password?</router-link>
             </div>
 
             <div class="text-center text-lg-start mt-4 pt-2">
@@ -58,7 +59,8 @@
     data() {
       return {
         user: {},
-        errors: {}
+        errors: {},
+        message: this.$route.params.message
       }
     },
     methods: {

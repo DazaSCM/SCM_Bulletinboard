@@ -19,6 +19,8 @@ import PostDetails from './components/PostDetails.vue';
 import CreatePost from './components/CreatePost.vue';
 import UpdatePost from './components/UpdatePost.vue';
 import CSVupload from './components/CSVupload.vue';
+import ResetPassword from './components/ResetPassword.vue';
+import UpdatePassword from './components/UpdatePassword.vue';
 
 import VueBlobJsonCsv from 'vue-blob-json-csv';
 
@@ -91,6 +93,22 @@ const routes = [
     name: 'CSVupload',
     path: '/csv_upload',
     component: CSVupload
+  },
+  {
+    name: 'ResetPassword',
+    path: '/reset_password',
+    component: ResetPassword,
+    meta: {
+      hideNavbar: true,
+    }
+  },
+  {
+    name: 'UpdatePassword',
+    path: '/update_password',
+    component: UpdatePassword,
+    meta: {
+      hideNavbar: true,
+    }
   }
 ];
 
@@ -107,7 +125,7 @@ const router = new VueRouter({ mode: 'history', routes: routes });
 router.beforeEach((to, from, next) => {
   console.log("to - ", to.name, "from - ", from.name);
   if (!localStorage.getItem('token')) {
-    if (to.name == 'SignIn') {
+    if (to.name == 'SignIn' || to.name == 'ResetPassword' || to.name == 'UpdatePassword') {
       next()
     }
     else {
@@ -115,7 +133,7 @@ router.beforeEach((to, from, next) => {
     }
   }
   else {
-    if (to.name == 'SignIn') {
+    if (to.name == 'SignIn' || to.name == 'ResetPassword' || to.name == 'UpdatePassword') {
       next ({name: 'UserListsAdmin'})
     }
     else {

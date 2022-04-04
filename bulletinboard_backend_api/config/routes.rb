@@ -11,4 +11,6 @@ Rails.application.routes.draw do
   put 'admin_update/:id', to: 'posts#admin_update'
   post 'csv_create', to: 'posts#csv_create'
   post 'change_password/:id', to: 'users#change_password'
+  post 'find_user', to: 'password_reset#find_user'
+  post 'update_password', to: 'password_reset#update_password'
 end

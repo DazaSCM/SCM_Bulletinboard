@@ -1,0 +1,9 @@
+<div class="container w-300">
+  <h1>Reset Password</h1>
+
+  Hi <%= @user.email %>,
+
+  Click the link below to reset your password.
+
+  <%= "http://localhost:8080/update_password?reset_token=#{@reset_token}" %>
+</div>

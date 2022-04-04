@@ -9,6 +9,7 @@
       </div>
     </div>
 
+    <p v-if="message" class="text-center text-success">{{ message }}</p>
     <div class="container mw-600 text-center mb-5">
       <div class="shadow-lg p-3 mb-5 bg-body rounded">
         <img v-bind:src="user.image_url" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
@@ -46,6 +47,7 @@ export default {
   data(){
     return{
       user: [],
+      message: this.$route.params.message,
       api_header : {headers: {
         'Authorization': localStorage.getItem('token')
       }}
