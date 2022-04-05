@@ -2,7 +2,7 @@ class PasswordResetController < ApplicationController
   def find_user
     @user = User.find_by(email: params[:email])
     if @user.present?
-      PasswordMailer.with(user: @user).reset.deliver_now
+      PasswordMailer.with(user: @user).reset.deliver_later
       render json: {success: "Password Reset link is sent to your email"}
     else
       render json: {notice: "There is no user with this email"}
@@ -11,10 +11,6 @@ class PasswordResetController < ApplicationController
 
   def update_password 
     @user = User.find_signed!(params[:reset_token], purpose: "password reset")
-
-    # for expire token 
-    # rescue ActiveSupport::MessageVerifier::InvalidSignature
-    #   render json: {notice: "Your token has expired, Please try again!"}
 
     if @user.update_attribute(:password, params[:password])
       render json: {notice: "password changed succussfully"}
